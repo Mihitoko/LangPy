@@ -23,6 +23,14 @@ class TranslatorBase(ABC):
 
     @abstractmethod
     def _translate_token(self, source: EntryToken) -> EntryToken:
+        """
+        Called once per token that has to be translated.
+        Must return the new token that is generated from method overwrite.
+        Can also return a token with no value.
+        But then the translated value needs to be inserted when meth:on_iter_done is called
+        :param source:
+        :return:
+        """
         raise NotImplementedError
 
     @abstractmethod
@@ -39,11 +47,19 @@ class TranslatorBase(ABC):
         else:
             ret = self._recursive_iter(self.base_stream, to_iter=cached.last_used, ignore=ignore_cache,
                                        cached_language=[])
+        self.on_iter_done(ret)
         cached.set_new_cache_state(self.base_stream)
         return ret
 
     def _recursive_iter(self, iter_, ignore, cached_language: list, to_iter: list = None):
-
+        """
+        Recursively iter through all tokens and call method:_translate_token if needed
+        :param iter_: The base list to iterate
+        :param ignore: If set to true all tokens will be translated
+        :param cached_language: The current tokens of target_language if available
+        :param to_iter: Tokens of last translated base template
+        :return:
+        """
         ret = []
         for token in iter_:
             if isinstance(token, EntryToken):
@@ -52,24 +68,32 @@ class TranslatorBase(ABC):
                     if index.value == token.value and not ignore:
                         a: EntryToken = cached_language[cached_language.index(token)]
                         ret.append(a)
-                        continue
                 except (ValueError, AttributeError):
-                    pass
-                ret.append(self._translate_token(token))
+                    ret.append(self._translate_token(token))
 
             elif isinstance(token, LanguageGroupToken):
                 group = LanguageGroupToken(token.var_name, comment=token.comment)
                 try:
                     old_lang = cached_language[cached_language.index(token)].tree
-                except ValueError:
+                except (ValueError, AttributeError):
                     old_lang = []
-                if to_iter is not None:
+                try:
                     i = to_iter[to_iter.index(token)].tree
-                else:
+                except (ValueError, AttributeError):
                     i = []
+
                 group.tree = self._recursive_iter(token.tree, to_iter=i,
                                                   ignore=ignore, cached_language=old_lang)
-                print(group.tree)
                 ret.append(group)
 
         return ret
+
+    def on_iter_done(self, ret: list):
+        """
+        Callback that is invoked when the iteration of all tokens is done.
+        This is usefull when you don't want to translate the tokens immediately and wait for the iteration to finish.
+        So you can perform a bulk translation to avoid rate-limits. This behavior has to be implemented in super class.
+        :param ret: A list of the entire token tree
+        :return:
+        """
+        pass

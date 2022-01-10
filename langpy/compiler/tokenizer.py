@@ -4,7 +4,7 @@ import typing
 from langpy.compiler.tokens import LanguageGroupToken, EntryToken
 from langpy.errors.common import *
 
-logger = logging.getLogger("langpy-compiler")
+logger = logging.getLogger("langpy")
 
 
 class Tokenizer:
@@ -32,6 +32,7 @@ class Tokenizer:
 
     def validate(self, stream: list[typing.Union[LanguageGroupToken, EntryToken]],
                  to_compare: list[typing.Union[LanguageGroupToken, EntryToken]] = None):
+        # TODO: Add proper Error handling to validation.
         if to_compare is None:
             to_compare = self.get_base_schema()
         for token in to_compare:
@@ -64,7 +65,8 @@ class Tokenizer:
                 g = LanguageGroupToken(var_name, comment=comment)
                 carry.append(self.__build_group_recursive(v, g))
                 continue
-
+            if k == "comment":
+                continue
             value = v["value"]
             t = EntryToken(var_name, value, v.get("comment"))
             carry.append(t)
@@ -83,22 +85,25 @@ class Tokenizer:
                 g = LanguageGroupToken(var_name, comment=comment)
                 group.add_item(self.__build_group_recursive(v, g))
                 continue
+            if k == "comment":
+                continue
             value = v["value"]
             t = EntryToken(var_name, value, v.get("comment"))
             group.add_item(t)
 
         return group
 
-    def new_template(self, token_stream: list = None):
+    def new_template(self, token_stream: list = None, with_value=False):
         if token_stream is None:
             token_stream = self.get_token_tree()
         ret = {}
         for token in token_stream:
             if isinstance(token, LanguageGroupToken):
-                ret.update({f"group@{token.var_name}": self.new_template(token.tree)})
+                ret.update({f"group@{token.var_name}": self.new_template(token.tree, with_value=with_value)})
             elif isinstance(token, EntryToken):
                 ret[f"{token.var_name}"] = {
-                    "comment": f"Template string: <{token.value}>",
-                    "value": ""
+                    "comment": f"Original string: <{token.value}>" if not token.comment and not with_value
+                    else token.comment,
+                    "value": "" if not with_value else token.value
                 }
         return ret

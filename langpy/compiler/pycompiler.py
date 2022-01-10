@@ -67,11 +67,13 @@ class PyCompiler(CompilerBase):
         str_buffer = io.StringIO()
         str_buffer.write(f"{' ' * indent}class {token.var_name}:\n")
         indent += 4
+        str_buffer.write(f"{' ' * indent}\"\"\"\n{' ' * indent}{token.comment}"
+                         f"\n{' ' * indent}\"\"\"\n")
         if not schema:
             w = token.value.replace("\n", f"\n{' ' * indent}")
             str_buffer.write(f"{' ' * indent}__value = \"\"\"{w}\"\"\"\n")
         else:
-            str_buffer.write(f"{' ' * indent}__value = \"\"\"\"\"\"\n")
+            str_buffer.write(f"{' ' * indent}__value = ''\n")
         str_buffer.write(f"{' ' * indent}@classmethod\n")
         com = ""
         if len(token.parameters) >= 1:
