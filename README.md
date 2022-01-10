@@ -1,5 +1,5 @@
 # Langpy
-###A library to localizing apps
+### A library to localizing apps
 
 
 Langpy is build for quickly setting up multi-language applications by building a python package for you. <br>
