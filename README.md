@@ -1,24 +1,24 @@
-#Langpy
+# Langpy
 ###A library to localizing apps
 
 
 Langpy is build for quickly setting up multi-language applications by building a python package for you. <br>
 For that Langpy utilizes .yaml files to read out your desired language structure and parse it into python code.
 
-###Features
+### Features
  - Auto generating templates. You just need to put in the translation.
  - String formatting with parameter hints.
  - Parameter validation
  - Auto translating using https://deepl.com api
 
-###Parameter validation
+### Parameter validation
 <p>
 Langpy support passing format strings as values.
 When the library parses the yaml file it will autodetect format strings and check if the string uses the same
 parameters for all languages. This helps to reduce runtime errors.
 </p>
 
-###Auto translate
+### Auto translate
 
 Langpy utilizes the language translation api from [DeepL](https://deepl.com).
 Just include your api token in your config file and use
@@ -27,7 +27,7 @@ stores old token lists so only changed values are sent to the [DeepL](https://de
 For more info refer to the docs.
 
 
-##Commands
+## Commands
 The three main commands are:
 
 >langpy init
