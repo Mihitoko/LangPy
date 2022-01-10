@@ -75,7 +75,7 @@ class TranslatorBase(ABC):
 
             elif isinstance(token, LanguageGroupToken):
                 group = LanguageGroupToken(token.var_name, comment=token.comment)
-                tr
+                try:
                     old_lang = cached_language[cached_language.index(token)].tree
                 except (ValueError, AttributeError):
                     old_lang = []
