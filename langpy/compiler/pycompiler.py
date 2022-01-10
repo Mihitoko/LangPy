@@ -58,7 +58,7 @@ class PyCompiler(CompilerBase):
                 str_io: io.StringIO = self._build_schema_entry(current_indent, token, schema=ab)
                 ret.write(str_io.getvalue())
             if isinstance(token, LanguageGroupToken):
-                t = self._build_schema_group_recursive(current_indent, token, ab=ab, path=path)
+                t = self._build_schema_group_recursive(current_indent, token, ab=ab, path=path.copy() if path else None)
                 ret.write(t.getvalue())
         return ret
 
