@@ -66,10 +66,13 @@ class TranslatorBase(ABC):
                 try:
                     index: EntryToken = to_iter[to_iter.index(token)]
                     if index.value == token.value and not ignore:
+                        print("Eq")
                         a: EntryToken = cached_language[cached_language.index(token)]
                         ret.append(a)
+                        continue
                 except (ValueError, AttributeError):
-                    ret.append(self._translate_token(token))
+                    pass
+                ret.append(self._translate_token(token))
 
             elif isinstance(token, LanguageGroupToken):
                 group = LanguageGroupToken(token.var_name, comment=token.comment)
