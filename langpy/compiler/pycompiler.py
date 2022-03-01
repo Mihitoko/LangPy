@@ -18,7 +18,7 @@ class PyCompiler(CompilerBase):
                        name: str = None):
         """
         Invokes a Language-schema file compilation.
-        This file does not contain any Strings for the translation. It is just a schema so ids can use
+        This file does not contain any Strings for the translation. It is just a schema so IDEs can use
         auto-completion.
         :param name:
         :param abstract:
