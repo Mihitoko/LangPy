@@ -1,4 +1,5 @@
 import abc
+import re
 import typing
 from abc import ABC, abstractmethod
 import io
@@ -25,6 +26,8 @@ class CompilerBase(ABC):
 
         raise NotImplementedError
 
+    def escape(self, value: str):
+        return value.replace("//", "")
     @abstractmethod
     def create_access_file(self, to_compile: dict) -> io.StringIO:
         raise NotImplementedError

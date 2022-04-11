@@ -68,10 +68,8 @@ class TranslatorBase(ABC):
                     if index.value == token.value and not ignore:
                         a: EntryToken = cached_language[cached_language.index(token)]
                         ret.append(a)
-                        continue
                 except (ValueError, AttributeError):
-                    pass
-                ret.append(self._translate_token(token))
+                    ret.append(self._translate_token(token))
 
             elif isinstance(token, LanguageGroupToken):
                 group = LanguageGroupToken(token.var_name, comment=token.comment)

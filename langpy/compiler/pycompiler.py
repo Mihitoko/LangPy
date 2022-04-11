@@ -18,7 +18,7 @@ class PyCompiler(CompilerBase):
                        name: str = None):
         """
         Invokes a Language-schema file compilation.
-        This file does not contain any Strings for the translation. It is just a schema so IDEs can use
+        This file does not contain any Strings for the translation. It is just a schema so ids can use
         auto-completion.
         :param name:
         :param abstract:
@@ -58,7 +58,8 @@ class PyCompiler(CompilerBase):
                 str_io: io.StringIO = self._build_schema_entry(current_indent, token, schema=ab)
                 ret.write(str_io.getvalue())
             if isinstance(token, LanguageGroupToken):
-                t = self._build_schema_group_recursive(current_indent, token, ab=ab, path=path.copy() if path else None)
+                t = self._build_schema_group_recursive(current_indent, token, ab=ab,
+                                                       path=path.copy() if path is not None else None)
                 ret.write(t.getvalue())
         return ret
 
@@ -71,7 +72,7 @@ class PyCompiler(CompilerBase):
                          f"\n{' ' * indent}\"\"\"\n")
         if not schema:
             w = token.value.replace("\n", f"\n{' ' * indent}")
-            str_buffer.write(f"{' ' * indent}__value = \"\"\"{w}\"\"\"\n")
+            str_buffer.write(f"{' ' * indent}__value = \"\"\"{self.escape(w)}\"\"\"\n")
         else:
             str_buffer.write(f"{' ' * indent}__value = ''\n")
         str_buffer.write(f"{' ' * indent}@classmethod\n")

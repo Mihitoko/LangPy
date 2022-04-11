@@ -20,7 +20,7 @@ class LanguageGroupToken:
 
 
 class EntryToken:
-    PARAMETER_REGEX = re.compile(r"{(\w*)}")
+    PARAMETER_REGEX = re.compile(r"(?<!//){(\w*)}")
 
     def __init__(self, var_name, value, comment=""):
         self.var_name: str = var_name
@@ -36,9 +36,17 @@ class EntryToken:
         return "\n".join(lines)
 
     def set_value(self, value: str):
+        self.parameters = self._get_params(value)
         self.value = self.__process(value)
-        self.parameters = self.PARAMETER_REGEX.findall(value)
 
+    def _get_params(self, value):
+        par = self.PARAMETER_REGEX.findall(value)
+        ret = []
+        for i in par:
+            if i not in ret:
+                ret.append(i)
+        return ret
+    
     def __eq__(self, other):
         if type(self) != type(other):
             return False
