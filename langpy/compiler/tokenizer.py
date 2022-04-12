@@ -67,8 +67,11 @@ class Tokenizer:
                 continue
             if k == "comment":
                 continue
-            value = v["value"]
-            t = EntryToken(var_name, value, v.get("comment"))
+            if isinstance(v, str):
+                value = v
+            else:
+                value = v["value"]
+            t = EntryToken(var_name, value, v.get("comment") if isinstance(v, dict) else None)
             carry.append(t)
 
         return carry
@@ -87,8 +90,11 @@ class Tokenizer:
                 continue
             if k == "comment":
                 continue
-            value = v["value"]
-            t = EntryToken(var_name, value, v.get("comment"))
+            if isinstance(v, str):
+                value = v
+            else:
+                value = v["value"]
+            t = EntryToken(var_name, value, v.get("comment") if isinstance(v, dict) else None)
             group.add_item(t)
 
         return group
