@@ -79,7 +79,7 @@ def translate(manager: ProjectManager, language: str):
 
 
 def _load_yaml(path, file):
-    with open(path + "/" + file, "r") as f:
+    with open(path + "/" + file, "r", encoding="UTF-8") as f:
         data = yaml.full_load(f)
     return data
 
