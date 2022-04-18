@@ -27,7 +27,10 @@ class CompilerBase(ABC):
         raise NotImplementedError
 
     def escape(self, value: str):
-        return value.replace("//", "")
+        x = value.replace("//", "")
+        to_join = [i.strip() for i in x.split("\n")]
+        return "\\n".join(to_join)
+
     @abstractmethod
     def create_access_file(self, to_compile: dict) -> io.StringIO:
         raise NotImplementedError
